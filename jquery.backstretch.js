@@ -1,12 +1,15 @@
 /*
  * jQuery Backstretch
- * Version 1.2.5
- * http://srobbin.com/jquery-plugins/jquery-backstretch/
+ * Version 1.3.0
+ * Original version : http://srobbin.com/jquery-plugins/jquery-backstretch/
  *
  * Add a dynamically-resized background image to the page
  *
  * Copyright (c) 2011 Scott Robbin (srobbin.com)
  * Dual licensed under the MIT and GPL licenses.
+ *
+ * Version 1.3.0
+ * Copyright (c) 2011 Christophe Desguez (eidolon-labs.com)
 */
 
 ;(function($) {
@@ -35,6 +38,7 @@
         stretchX:  false,        // Should we occupy full screen width
         speed: 0,                // fadeIn speed for background after image loads (e.g. "fast" or 500)
         transition: function(image, speed, oldies, callback) {
+            oldies.fadeOut(speed);
             image.fadeIn(speed, function() {
                 // Remove the old images
                 oldies.remove();
