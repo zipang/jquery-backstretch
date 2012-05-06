@@ -72,16 +72,16 @@
         // Prepare to delete any old images
         var oldies = container.find("img").addClass("deleteable");
 
-        var $img = $("<img />")
+        var $img = $("<img>")
             .css({
                 position: "absolute",
                 display: "none",
                 margin: 0,
-                border: "none",
                 zIndex: -999999,
                 width: "auto", height: "auto"
             }).bind("load", function imageLoaded() {
                 $img.data("ratio", $img.width() / $img.height()); // store the native image ratio when just loaded
+                container.data("image", $img);
                 adjustBG(function transition() {
                     settings.transition($img, settings.speed, oldies, callback);
                 });
@@ -108,13 +108,14 @@
 
         function centerImage() {
 
-            $img.css({
+            container.data("image").css({
                 margin: (settings.centeredX) ? "0 auto" : "0 auto 0 0",
                 height: rootElement.height()
             });
         }
         function stretchImage() {
-            var imgRatio = $img.data("ratio"), // the native image ratio
+            var $img = container.data("image"),
+                imgRatio = $img.data("ratio"), // the native image ratio
                 bgCSS = {left: 0, top: 0},
                 bgWidth  = rootElement.width(),
                 bgHeight = bgWidth / imgRatio,
@@ -125,6 +126,7 @@
             if (bgHeight >= rootElement.height()) {
                 bgOffset = (bgHeight - rootElement.height()) /2;
                 if (settings.centeredY) $.extend(bgCSS, {top: "-" + bgOffset + "px"});
+
             } else {
                 bgHeight = rootElement.height();
                 bgWidth = bgHeight * imgRatio;
