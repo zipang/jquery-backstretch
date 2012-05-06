@@ -104,8 +104,10 @@
 
         function centerImage() {
 
-            var bgCSS = (settings.centeredX) ? {margin: "0 auto"} : {margin: "0 auto 0 0"};
-            $img.css(bgCSS);
+            $img.css({
+                margin: (settings.centeredX) ? "0 auto" : "0 auto 0 0",
+                height: rootElement.height()
+            });
         }
         function stretchImage() {
             var imgRatio = $img.data("ratio"), // the native image ratio
