@@ -9,7 +9,7 @@
  * Dual licensed under the MIT and GPL licenses.
  *
  * Version 1.3.0
- * Copyright (c) 2011 Christophe Desguez (eidolon-labs.com)
+ * Copyright (c) 2012 Christophe Desguez (eidolon-labs.com)
 */
 
 ;(function($) {
@@ -35,8 +35,8 @@
     var defaultSettings = {
         centeredX: true,         // Should we center the image on the X axis?
         centeredY: true,         // Should we center the image on the Y axis?
-        stretchX:  false,        // Should we occupy full screen width
-        speed: 0,                // fadeIn speed for background after image loads (e.g. "fast" or 500)
+        stretchX:  true,         // Should we occupy full screen width?
+        speed: 0,                // transition speed after image load (e.g. "fast" or 500)
         transition: function(image, speed, oldies, callback) {
             oldies.fadeOut(speed);
             image.fadeIn(speed, function() {
@@ -70,11 +70,10 @@
 
 
         // Prepare to delete any old images
-        var oldies = container.find("img").addClass("deleteable");
+        var oldies = container.find("img");
 
         var $img = $("<img>")
             .css({
-                position: "absolute",
                 display: "none",
                 margin: 0,
                 zIndex: -999999,
@@ -109,6 +108,7 @@
         function centerImage() {
 
             container.data("image").css({
+                display: "block",
                 margin: (settings.centeredX) ? "0 auto" : "0 auto 0 0",
                 height: rootElement.height()
             });
