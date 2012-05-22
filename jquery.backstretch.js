@@ -1,12 +1,13 @@
 /*
  * jQuery Backstretch
  * Version 1.3.0
- * Original version : http://srobbin.com/jquery-plugins/jquery-backstretch/
+ * https://github.com/zipang/jquery-backstretch
  *
  * Add a dynamically-resized background image to the page
  *
- * Copyright (c) 2011 Scott Robbin (srobbin.com)
+ * Original version Copyright (c) 2011 Scott Robbin (srobbin.com)
  * Dual licensed under the MIT and GPL licenses.
+ * http://srobbin.com/jquery-plugins/backstretch/
  *
  * Version 1.3.0
  * Copyright (c) 2012 Christophe Desguez (eidolon-labs.com)
@@ -14,12 +15,12 @@
 
 ;(function($) {
 
-    var rootElement = ("onorientationchange" in window) ? $(document) : $(window); // hack to account for iOS position:fixed shortcomings
-    var container;
+    var $viewport = ("onorientationchange" in window) ? $(document) : $(window); // hack to account for iOS position:fixed shortcomings
+    var $backstretch;
 
     // Initialize
-    function initContainer() {
-        container = $("<div>")
+    function init() {
+        $backstretch = $("<div>")
             .attr("id", "backstretch")
             .css({
                 position: "fixed",
@@ -35,34 +36,43 @@
     var defaultSettings = {
         centeredX: true,         // Should we center the image on the X axis?
         centeredY: true,         // Should we center the image on the Y axis?
-        stretchX:  true,         // Should we occupy full screen width?
+        stretchMode: "crop",     // Should we occupy full screen width?
         speed: 0,                // transition speed after image load (e.g. "fast" or 500)
         transition: function(image, speed, oldies, callback) {
-            oldies.fadeOut(speed);
-            image.fadeIn(speed, function() {
-                // Remove the old images
-                oldies.remove();
-                // Callback
-                if (typeof callback == "function") callback();
-            });
+            var appear = function() {
+                image.fadeIn(speed, function() {
+
+                    // Callback
+                    if (typeof callback == "function") callback();
+                });
+            }
+            if (oldies.length) {
+                oldies.fadeOut(speed, function() {
+                    // Remove the old images
+                    oldies.remove();
+                    appear();
+                });
+            } else {
+                appear();
+            }
         }
     };
 
 
     $.backstretch = function(src, options, callback) {
 
-        if (!container) { // first call
-            initContainer();
+        if (!$backstretch) { // first call
+            init();
             // Adjust the background size when the window is resized or orientation has changed (iOS)
-            $(window).resize(adjustBG);
+            $(window).resize(adjustSize);
         }
 
-        var settings = container.data("settings") || defaultSettings; // If this has been called once before, use the old settings as the default
+        var settings = $backstretch.data("settings") || defaultSettings; // If this has been called once before, use the old settings as the default
 
         // Extend the settings with those the user has provided
         if (options && typeof options == "object") {
             $.extend(settings, options);
-            container.data("settings", settings);
+            $backstretch.data("settings", settings);
 
         } else if (options && typeof options == "function") {// Just in case the user passed in a function without options
             callback = options;
@@ -70,73 +80,88 @@
 
 
         // Prepare to delete any old images
-        var oldies = container.find("img");
+        var oldies = $backstretch.find("img");
 
         var $img = $("<img>")
             .css({
                 display: "none",
-                margin: 0,
                 zIndex: -999999,
                 width: "auto", height: "auto"
+
             }).bind("load", function imageLoaded() {
                 $img.data("ratio", $img.width() / $img.height()); // store the native image ratio when just loaded
-                container.data("image", $img);
-                adjustBG(function transition() {
+                $backstretch.data("image", $img);
+                adjustSize(function transition() {
                     settings.transition($img, settings.speed, oldies, callback);
                 });
 
-            }).appendTo(container);
+            }).appendTo($backstretch);
 
 
         $img.attr("src", src); // Hack for IE img onload event
 
-        function adjustBG(next) {
+        function adjustSize(next) {
             try {
-                // resize the container first
-                container.width(rootElement.width()).height(rootElement.height());
 
-                if (settings.stretchX) stretchImage(); else centerImage();
+                var pageWidth = $viewport.width(), pageHeight = $viewport.height(),
+                    image = $backstretch.data("image"),
+                    imgRatio = image.data("ratio");
+
+                // resize the container first
+                $backstretch.width(pageWidth).height(pageHeight);
+
+                // try the usual stretch on image's width
+                var imgWidth  = pageWidth;
+                var imgHeight = imgWidth / imgRatio;
+
+                if (settings.stretchMode == "crop") {
+
+                    if (imgHeight < pageHeight) { // stretch the other way
+                        imgHeight = pageHeight;
+                        imgWidth  = imgHeight * imgRatio;
+                    }
+                } else if (settings.stretchMode == "adapt") {
+
+                    if (imgRatio < 1) { // image in portrait mode : stretch the other way
+                        imgHeight = pageHeight;
+                        imgWidth  = imgHeight * imgRatio;
+                    }
+                } else { // fit
+
+                    if (imgHeight > pageHeight) {
+                        imgHeight = pageHeight;
+                        imgWidth  = imgHeight * imgRatio;
+                    }
+                }
+
+                var imgCSS = {position: "absolute", left: 0, top: 0};
+
+                // Center as needed
+                // Note: Offset code provided by Peter Baker (http://ptrbkr.com/). Thanks, Peter!
+                if (settings.centeredY) {
+                    $.extend(imgCSS, {top: ((pageHeight - imgHeight) / 2) + "px"});
+                }
+
+                if (settings.centeredX) {
+                    $.extend(imgCSS, {left: ((pageWidth - imgWidth) / 2) + "px"});
+                }
+
+                image.width(imgWidth).height(imgHeight).css(imgCSS);
+
             } catch(err) {
-                // IE7 seems to trigger _adjustBG before the image is loaded.
+                // IE7 seems to trigger _adjustSize before the image is loaded.
                 // This try/catch block is a hack to let it fail gracefully.
+                console.log(err);
             }
 
             // Executed the callback function if passed
-            if (typeof next == "function") next();
-        }
-
-        function centerImage() {
-
-            container.data("image").css({
-                display: "block",
-                margin: (settings.centeredX) ? "0 auto" : "0 auto 0 0",
-                height: rootElement.height()
-            });
-        }
-        function stretchImage() {
-            var $img = container.data("image"),
-                imgRatio = $img.data("ratio"), // the native image ratio
-                bgCSS = {left: 0, top: 0},
-                bgWidth  = rootElement.width(),
-                bgHeight = bgWidth / imgRatio,
-                bgOffset;
-
-            // Make adjustments based on image ratio
-            // Note: Offset code provided by Peter Baker (http://ptrbkr.com/). Thanks, Peter!
-            if (bgHeight >= rootElement.height()) {
-                bgOffset = (bgHeight - rootElement.height()) /2;
-                if (settings.centeredY) $.extend(bgCSS, {top: "-" + bgOffset + "px"});
-
+            if (typeof next == "function") {
+                console.log("Transition..");
+                next();
             } else {
-                bgHeight = rootElement.height();
-                bgWidth = bgHeight * imgRatio;
-                bgOffset = (bgWidth - rootElement.width()) / 2;
-                if (settings.centeredX) $.extend(bgCSS, {left: "-" + bgOffset + "px"});
+                console.log("Resizing..");
             }
-
-            $img.width(bgWidth).height(bgHeight).css(bgCSS);
         }
-
 
         // For chaining
         return this;
