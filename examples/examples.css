@@ -1,0 +1,43 @@
+body {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    background-color: #675432;
+}
+p {
+    font-family: Georgia, serif;
+}
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: rgba(255,255,255,0.5);
+    padding: 20px;
+}
+
+code {
+    display: block;
+    background-color: #EEE;
+    border: 1px solid #CCC;
+    font-family: 'Bitstream Vera Sans Mono','DejaVu Sans Mono',Courier,monospace !important;
+    font-size: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 1em;
+}
+code .comment {
+    color: #3CB371;
+}
+code .keyword {
+    color: #1E90FF;
+    font-weight: bold;
+}
+code .class {
+    font-style: italic;
+}
+code .string {
+    color: #CD5C5C;
+    font-weight: bold;
+}
+code .number {
+    color: #E9967A;
+    font-weight: bold;
+}
