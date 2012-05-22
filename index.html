@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Jquery-backstretch by zipang</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Jquery-backstretch</h1>
+        <h2>Backstretch is a simple jQuery plugin that allows you to add a dynamically-resized background image to any page. The image will stretch to fit the page, and will automatically resize as the window size changes.</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/zipang/jquery-backstretch/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/zipang/jquery-backstretch/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/zipang/jquery-backstretch" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p>h1. jQuery Backstretch</p>
+
+<p>Backstretch is a jQuery plugin that allows you to add a dynamically-resized background image to any page.
+The image will stretch to fit the page, and will automatically resize as the window size changes.</p>
+
+<p>The first version of this plugin was created by Scott Robbin (srobbin.com) and is still maintained here : <a href="http://srobbin.com/jquery-plugins/backstretch/">http://srobbin.com/jquery-plugins/backstretch/</a></p>
+
+<p>This new version (1.3.0) is a full rewrite of the plugin with new options that offer maximum flexibility and greater control.
+This new version is still 100% compatible with the previous plugin and can be used as a direct replacement without code modification.</p>
+
+<p>h2. Demo</p>
+
+<p>A couple of demos included with this package, check these live examples :</p>
+
+<p>h2. Options</p>
+
+<p>h3. centeredX</p>
+
+<p>The ratio of the width/height of the image doesn't always jive with the width/height of the window. This parameter controls whether or not we center the image on the X axis to account for the discrepancy. (type=Boolean, default=true)</p>
+
+<p>h3. centeredY</p>
+
+<p>This parameter controls whether or not we center the image on the Y axis to account for the aforementioned discrepancy. (type=Boolean, default=true)</p>
+
+<p>h3. stretchMode</p>
+
+<p>This parameter controls whether how the image is stretched to the screen. (type=String, default='crop')
+The supported values for this options are :
+    - <code>crop</code> (Default) : Allways cover the full screen.
+    - <code>fit</code> : Stretch the image so that it will fit inside the viewport.
+    - <code>adapt</code> : This option is a kind of medium alternative that will offer a good compromise between screen coverance and image cropped only when necessary. Thus, it will allways stretch image in landscape format to occupy full screen width, while image in portrait will allways be stretched vertically.</p>
+
+<p>h3. speed</p>
+
+<p>This is the transition speed at which the next image will appear, after downloading is complete.
+Integers are accepted, as well as standard jQuery speed strings (slow, normal, fast). (type=Integer, default=0)</p>
+
+<p>h3. transition</p>
+
+<p>Supply a new transition function that takes the following parameters (image, speed, oldies, callback).
+Where :
+    - image is the new (currently invisible) image to display
+    - speed is the current setting for the speed of the transition
+    - oldies is the old image. This transition function SHOULD remove the old image after the transition is finished.
+    - callback. The transition function MUST call this callback function if supplied after the transition's end.</p>
+
+<p>h2. Setup</p>
+
+<p>Include the jQuery library and Backstretch plugin files in your webpage (preferably at the bottom of the page, before the closing BODY tag):</p>
+
+<pre><code></code></pre>
+
+<p>Note: The example above uses the Google hosted version of jQuery.</p>
+
+<pre><code>
+  $.backstretch("/path/to/image.jpg", {speed: 150});
+</code></pre>
+
+<p>Want to change the image after Backstretch has been loaded? No problem, just call it again!</p>
+
+<pre><code>
+  $.backstretch("/path/to/image.jpg", {speed: 150});
+  
+  // Perhaps you'd like to change the image on a button click
+  $(".button").click(function() {
+      $.backstretch("/path/to/next_image.jpg");
+  });
+</code></pre>
+
+<p>h2. Changelog</p>
+
+<p>h3. Version 1.3</p>
+
+<ul>
+<li>Fully refactored version.</li>
+<li>Added the 'stretchMode' parameter to support multiple stretch options with regards of image orientation.</li>
+<li>New support for custom transitions.</li>
+</ul><p>h3. Version 1.2</p>
+
+<ul>
+<li>You can now call backstretch() on the same element, and it will replace the existing image.</li>
+</ul><p>h3. Version 1.1</p>
+
+<ul>
+<li>Added 'centeredX' and 'centeredY' options.</li>
+<li>Removed 'hideUntilReady' option. It looks pretty bad if you don't hide the image until it's fully loaded.</li>
+<li>Fixed IE img onload bug.</li>
+<li>Now supports iPhone/iPad orientation changes.</li>
+</ul>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
