@@ -37,24 +37,14 @@
         centeredX: true,         // Should we center the image on the X axis?
         centeredY: true,         // Should we center the image on the Y axis?
         stretchMode: "crop",     // Should we occupy full screen width?
-        speed: 0,                // transition speed after image load (e.g. "fast" or 500)
+        speed: 1000,             // transition speed after image load (e.g. "fast" or 500)
         transition: function(image, speed, oldies, callback) {
-            var appear = function() {
-                image.fadeIn(speed, function() {
-
-                    // Callback
-                    if (typeof callback == "function") callback();
-                });
-            }
-            if (oldies.length) {
-                oldies.fadeOut(speed, function() {
-                    // Remove the old images
-                    oldies.remove();
-                    appear();
-                });
-            } else {
-                appear();
-            }
+            oldies.fadeOut(speed);
+            image.fadeIn(speed, function() {
+                oldies.remove();
+                // Callback
+                if (typeof callback == "function") callback();
+            });
         }
     };
 
@@ -101,66 +91,57 @@
         $img.attr("src", src); // Hack for IE img onload event
 
         function adjustSize(next) {
-            try {
 
-                var pageWidth = $viewport.width(), pageHeight = $viewport.height(),
-                    image = $backstretch.data("image"),
-                    imgRatio = image.data("ratio");
+            var pageWidth = $viewport.width(), pageHeight = $viewport.height(),
+                image = $backstretch.data("image"),
+                imgRatio = image.data("ratio");
 
-                // resize the container first
-                $backstretch.width(pageWidth).height(pageHeight);
+            // resize the container first
+            $backstretch.width(pageWidth).height(pageHeight);
 
-                // try the usual stretch on image's width
-                var imgWidth  = pageWidth;
-                var imgHeight = imgWidth / imgRatio;
+            // try the usual stretch on image's width
+            var imgWidth  = pageWidth;
+            var imgHeight = imgWidth / imgRatio;
 
-                if (settings.stretchMode == "crop") {
+            if (settings.stretchMode == "crop") {
 
-                    if (imgHeight < pageHeight) { // stretch the other way
-                        imgHeight = pageHeight;
-                        imgWidth  = imgHeight * imgRatio;
-                    }
-                } else if (settings.stretchMode == "adapt") {
-
-                    if (imgRatio < 1) { // image in portrait mode : stretch the other way
-                        imgHeight = pageHeight;
-                        imgWidth  = imgHeight * imgRatio;
-                    }
-                } else { // fit
-
-                    if (imgHeight > pageHeight) {
-                        imgHeight = pageHeight;
-                        imgWidth  = imgHeight * imgRatio;
-                    }
+                if (imgHeight < pageHeight) { // stretch the other way
+                    imgHeight = pageHeight;
+                    imgWidth  = imgHeight * imgRatio;
                 }
+            } else if (settings.stretchMode == "adapt") {
 
-                var imgCSS = {position: "absolute", left: 0, top: 0};
-
-                // Center as needed
-                // Note: Offset code provided by Peter Baker (http://ptrbkr.com/). Thanks, Peter!
-                if (settings.centeredY) {
-                    $.extend(imgCSS, {top: ((pageHeight - imgHeight) / 2) + "px"});
+                if (imgRatio < 1) { // image in portrait mode : stretch the other way
+                    imgHeight = pageHeight;
+                    imgWidth  = imgHeight * imgRatio;
                 }
+            } else { // fit
 
-                if (settings.centeredX) {
-                    $.extend(imgCSS, {left: ((pageWidth - imgWidth) / 2) + "px"});
+                if (imgHeight > pageHeight) {
+                    imgHeight = pageHeight;
+                    imgWidth  = imgHeight * imgRatio;
                 }
-
-                image.width(imgWidth).height(imgHeight).css(imgCSS);
-
-            } catch(err) {
-                // IE7 seems to trigger _adjustSize before the image is loaded.
-                // This try/catch block is a hack to let it fail gracefully.
-                console.log(err);
             }
+
+            var imgCSS = {position: "absolute", left: 0, top: 0};
+
+            // Center as needed
+            // Note: Offset code provided by Peter Baker (http://ptrbkr.com/). Thanks, Peter!
+            if (settings.centeredY) {
+                $.extend(imgCSS, {top: ((pageHeight - imgHeight) / 2) + "px"});
+            }
+
+            if (settings.centeredX) {
+                $.extend(imgCSS, {left: ((pageWidth - imgWidth) / 2) + "px"});
+            }
+
+            image.width(imgWidth).height(imgHeight).css(imgCSS);
+
+
 
             // Executed the callback function if passed
-            if (typeof next == "function") {
-                console.log("Transition..");
-                next();
-            } else {
-                console.log("Resizing..");
-            }
+            if (typeof next == "function") next();
+
         }
 
         // For chaining
