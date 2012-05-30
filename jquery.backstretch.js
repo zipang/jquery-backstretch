@@ -1,7 +1,7 @@
 /*
  * jQuery Backstretch : Put a dynamically-resized image on your background
  * Version 1.3.0 - Copyright (c) 2012 Christophe Desguez (eidolon-labs.com)
- * https://github.com/zipang/jquery-backstretch
+ * https://zipang.github.com/jquery-backstretch
  *
  * Original version Copyright (c) 2011 Scott Robbin (srobbin.com)
  * Dual licensed under the MIT and GPL licenses.
