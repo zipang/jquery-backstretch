@@ -1,16 +1,12 @@
 /*
- * jQuery Backstretch
- * Version 1.3.0
+ * jQuery Backstretch : Put a dynamically-resized image on your background
+ * Version 1.3.0 - Copyright (c) 2012 Christophe Desguez (eidolon-labs.com)
  * https://github.com/zipang/jquery-backstretch
- *
- * Add a dynamically-resized background image to the page
  *
  * Original version Copyright (c) 2011 Scott Robbin (srobbin.com)
  * Dual licensed under the MIT and GPL licenses.
  * http://srobbin.com/jquery-plugins/backstretch/
  *
- * Version 1.3.0
- * Copyright (c) 2012 Christophe Desguez (eidolon-labs.com)
 */
 
 ;(function($) {
@@ -23,7 +19,7 @@
         $backstretch = $("<div>")
             .attr("id", "backstretch")
             .css({
-                position: "fixed",
+                position: "absolute",
                 left: 0, top: 0,
                 margin: 0, padding: 0,
                 overflow: "hidden",
