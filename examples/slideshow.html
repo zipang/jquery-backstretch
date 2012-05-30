@@ -10,7 +10,7 @@
         <p>This is the chance for you to try and see all the options in action in an interactive slideshow.</p>
         <label for="centeredX">Center horizontally: <input id="centeredX" type="checkbox" value="checked" /></label><br/>
         <label for="centeredY">Center vertically: <input id="centeredY" type="checkbox" value="checked" /></label><br/>
-        <label for="stretchMode">Center vertically:
+        <label for="stretchMode">Stretch Mode:
             <select id="stretchMode"  >
                 <option value="crop" selected>Crop</option>
                 <option value="adapt">Adapt</option>
@@ -40,7 +40,7 @@
     // so they will remain the same as defined by the first call
     function nextSlide() {
         index = (index >= images.length - 1) ? 0 : index + 1;
-        var options = {
+        var options = { // take the values of our form
             centeredX: ($("#centeredX")[0].checked),
             centeredY: ($("#centeredY")[0].checked),
             stretchMode : $("#stretchMode").val()
